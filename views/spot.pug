@@ -1,13 +1,13 @@
 //- extends layout
 
 html
-	head(content-type='application/json')
+	head
 		title= title
 	body
 		h1= message
-		form(method='POST' action='/api/spots') 
+		form(method='POST' action='/spots') 
 			h1 Create a new spot
-			input(type='text', name='spotName', placeholder='spot name')
+			input(type='text', class='spotName', placeholder='spot name')
 			input(type='submit', value='Create spot')
 
 
