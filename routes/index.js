@@ -27,6 +27,41 @@ router.get('/api/spots', (req, res) => {
 	});
 });
 
+//access spot by id
+router.get('/api/spots/:spotId/', (req, res) => {
+	var spotId = req.params.spotId
+	knex.select('*').from('spot').where('id', spotId)
+	.then(function(values){
+		res.send(values);
+	});
+});	
+
+router.get('/spots', (req, res) => {
+	knex.select('*').from('spot').then(function(values)
+	{
+		// res.send(values);
+		res.render('spots',
+		{
+			allSpots: values
+			// name: values[43].name
+		});
+	});
+});
+
+//access spot page by spot name
+router.get('/spots/:spotName/', (req, res) => {
+	var spotName = req.params.spotName
+	knex.select('*').from('spot').where('name', spotName).then(function(values){
+	// res.send(values);
+		res.render('spot', 
+		{ 
+			name: spotName,
+			id: values[0].id
+		});
+	});
+});
+
+
 router.post('/api/lists', (req, res) => {
 	var listName = req.body.newListName;
 	knex('list')
@@ -47,26 +82,5 @@ router.get('/api/lists', (req, res) => {
 	});
 });
 
-//access spot by id
-router.get('/api/spots/:spotId/', (req, res) => {
-	var spotId = req.params.spotId
-	knex.select('*').from('spot').where('id', spotId)
-	.then(function(values){
-		res.send(values);
-	});
-});	
-
-//access spot page by spot name
-router.get('/spots/:spotName/', (req, res) => {
-	var spotName = req.params.spotName
-	knex.select('*').from('spot').where('name', spotName).then(function(values){
-	// res.send(values);
-	res.render('spot', 
-		{ 
-			name: spotName,
-			id: values[0].id
-		});
-	});
-});
 
 module.exports = router;
