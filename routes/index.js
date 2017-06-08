@@ -40,7 +40,12 @@ router.get('/api/spots/:spotId/', (req, res) => {
 router.get('/spots/:spotName/', (req, res) => {
 	var spotName = req.params.spotName
 	knex.select('*').from('spot').where('name', spotName).then(function(values){
-	res.render('spot', { name: spotName})
+	// res.send(values);
+	res.render('spot', 
+		{ 
+			name: spotName,
+			id: values[0].id
+		});
 	});
 });
 
