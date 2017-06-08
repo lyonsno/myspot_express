@@ -8,7 +8,7 @@ router.get('/', function(req, res) {
 });
 
 router.post('/api/spots', (req, res) => {
-	var spotName = req.body.spotName;
+	var spotName = req.body.newSpotName;
 	knex('spot')
 	.returning('id')
 	.insert({
@@ -23,6 +23,26 @@ router.post('/api/spots', (req, res) => {
 router.get('/api/spots', (req, res) => {
 	res.contentType('application/json');
 	var params = knex.select('*').from('spot').then(function(params){
+		res.send(params[0]);
+	});
+});
+
+router.post('/api/lists', (req, res) => {
+	var listName = req.body.newListName;
+	knex('list')
+	.returning('id')
+	.insert({
+		name: listName
+	})
+	.then(function(params){
+		res.send(req.body);
+		res.sendStatus(200);
+	});
+});
+
+router.get('/api/lists', (req, res) => {
+	res.contentType('application/json');
+	knex.select('*').from('list').then(function(params){
 		res.send(params[0]);
 	});
 });
@@ -48,15 +68,5 @@ router.get('/spots/:spotName/', (req, res) => {
 		});
 	});
 });
-
-router.get('/monkey/bear/:potato/:robots', function (req, res) {
-	var thing = `${req.params.potato} ${req.params.robots}`
-	res.render(
-		'index',
-		{
-			title: thing,
-			message: thing
-		})
-})
 
 module.exports = router;

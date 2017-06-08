@@ -5,10 +5,16 @@ html
 		title= title
 	body
 		h1= message
+
 		form(method='POST' action='/api/spots') 
 			h1 Create a new spot
-			input(type='text', name='spotName', placeholder='spot name')
+			input(type='text', name='newSpotName', placeholder='spot name')
 			input(type='submit', value='Create spot')
+
+		form(method='POST' action='/api/lists')
+			h1 Create a new list
+			input(type='text', name='newListName', placeholder='list name')
+			input(type='submit', value='Create list')
 
 
 //- block content
