@@ -39,11 +39,9 @@ router.get('/api/spots/:spotId/', (req, res) => {
 router.get('/spots', (req, res) => {
 	knex.select('*').from('spot').then(function(values)
 	{
-		// res.send(values);
 		res.render('spots',
 		{
 			allSpots: values
-			// name: values[43].name
 		});
 	});
 });
