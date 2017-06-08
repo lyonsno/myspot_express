@@ -9,15 +9,13 @@ router.get('/', function(req, res) {
 
 router.post('/api/spots', (req, res) => {
 	var spotName = req.body.spotName;
-	return res.send(req.body);
-	// res.send(JSON.stringify(req.body));	
-	// res.send(spotName);
 	knex('spot')
 	.returning('id')
 	.insert({
 		name: spotName
 	})
 	.then(function(params){
+		res.send(req.body);
 		res.sendStatus(200);
 	});
 });
@@ -36,19 +34,13 @@ router.get('/api/spots/:spotId/', (req, res) => {
 	.then(function(values){
 		res.send(values);
 	});
-});
+});	
 
 //access spot page by spot name
 router.get('/spots/:spotName/', (req, res) => {
 	var spotName = req.params.spotName
 	knex.select('*').from('spot').where('name', spotName).then(function(values){
-	res.render('spot', { id: "spot"})
-	});
-});
-
-router.get('/spotsjson', (req, res) => {
-	var spots = knex.select('*').from('spot').then(function(spots){
-		res.json(spots);
+	res.render('spot', { name: spotName})
 	});
 });
 
