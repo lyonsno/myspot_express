@@ -23,9 +23,8 @@ router.post('/api/spots', (req, res) => {
 router.get('/api/spots', (req, res) => {
 	res.contentType('application/json');
 	var params = knex.select('*').from('spot').then(function(params){
-		res.send(params[0]);
+		res.status(200).send({ 'data': params });
 	});
-	res.sendStatus(200);
 });
 
 //access spot by id
@@ -33,7 +32,7 @@ router.get('/api/spots/:spotId/', (req, res) => {
 	var spotId = req.params.spotId
 	knex.select('*').from('spot').where('id', spotId)
 	.then(function(values){
-		res.send(values);
+		res.status(200).send(values);
 	});
 });	
 

@@ -30,8 +30,12 @@ describe('routes : spots', () => {
 });
 
 describe('GET /api/spots', () => {
-  it('should respond with all users', (done) => {
-    chai.request(server)
+  // var host = "http://" + process.env.IP + ':' + process.env.PORT;
+  var host = "http://127.0.0.1:3000";
+  var path = "/api/spots";
+
+  it('should respond with all spots', (done) => {
+    chai.request(host)
     .get('/api/spots')
     .end((err, res) => {
       // there should be no errors
@@ -42,9 +46,6 @@ describe('GET /api/spots', () => {
       res.type.should.equal('application/json');
       // the JSON response body should have a
       // key-value pair of {"status": "success"}
-      res.body.status.should.eql('success');
-      // the JSON response body should have a
-      // key-value pair of {"data": [2 user objects]}
       res.body.data.length.should.eql(44);
       // the first object in the data array should
       // have the right keys
