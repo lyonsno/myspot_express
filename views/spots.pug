@@ -1,0 +1,10 @@
+extends layout
+
+block content
+	ul
+		each val in allSpots
+			br
+			p1= 'list: ' + val['name']
+			select
+				each property, index in val
+					option= index 	+ ': ' + property
