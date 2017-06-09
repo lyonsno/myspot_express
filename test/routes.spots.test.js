@@ -8,23 +8,23 @@ chai.use(chaiHttp);
 describe('routes : spots', () => {
 
   beforeEach((done) => {
-    // knex.migrate.rollback()
-    // .then(() => {
-    //   knex.migrate.latest()
-    //   .then(() => {
-    //     knex.seed.run()
-    //     .then(() => {
-    //       done();
-    //     })
-    //   });
-    // });
+    knex.migrate.rollback()
+    .then(() => {
+      knex.migrate.latest()
+      .then(() => {
+        knex.seed.run()
+        .then(() => {
+          done();
+        })
+      });
+    });
   });
 
   afterEach((done) => {
-    // knex.migrate.rollback()
-    // .then(() => {
-    //   done();
-    // });
+    knex.migrate.rollback()
+    .then(() => {
+      done();
+    });
   });
 
 });
