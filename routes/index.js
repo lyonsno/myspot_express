@@ -25,6 +25,7 @@ router.get('/api/spots', (req, res) => {
 	var params = knex.select('*').from('spot').then(function(params){
 		res.send(params[0]);
 	});
+	res.sendStatus(200);
 });
 
 //access spot by id
