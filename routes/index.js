@@ -8,15 +8,15 @@ router.get('/', function(req, res) {
 });
 
 router.post('/api/spots', (req, res) => {
+	res.contentType('application/json');
 	var spotName = req.body.newSpotName;
 	knex('spot')
-	.returning('id')
+	.returning()
 	.insert({
 		name: spotName
 	})
 	.then(function(params){
-		res.send(req.body);
-		res.sendStatus(200);
+		res.send(params).status(200);
 	});
 });
 
