@@ -85,7 +85,7 @@ var knex = require('knex')(require('../knexfile'))
 	router.get('/api/lists', (req, res) => {
 		res.contentType('application/json');
 		knex.select('*').from('list').then(function(params){
-			res.send(params[0]);
+			res.status(200).send({'data': params });
 		});
 	});
 }

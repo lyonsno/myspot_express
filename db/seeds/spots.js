@@ -7,7 +7,9 @@ exports.seed = function(knex, Promise) {
       return Promise.all([
         knex('spot').insert({id: 1, name: 'rowValue1'}),
         knex('spot').insert({id: 2, name: 'rowValue2'}),
-        knex('spot').insert({id: 3, name: 'rowValue3'})
+        knex('spot').insert({id: 3, name: 'rowValue3'}),
+
+
       ]);
     });
 };

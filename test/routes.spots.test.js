@@ -77,10 +77,6 @@ describe('routes : spots', () => {
         values[0].name.should.equal('my name is robert paulson');
         done();
       });
-
-      // should have the right keys
-      // res.body.data[0].should.include.keys(
-        // 'id', 'name', 'creator_id', 'created_at', 'updated_at'
     });
   });
 });
