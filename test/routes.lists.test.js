@@ -30,7 +30,7 @@ describe('routes : lists', () => {
 	var host = "http://127.0.0.1:3000";
 	var path = "/api/lists";
 
-	it('sould respond with all lists', (done) => {
+	it('should respond with all lists', (done) => {
 		chai.request(host)
 		.get('/api/spots')
 		.end((err, res) => {
@@ -46,5 +46,29 @@ describe('routes : lists', () => {
 				done();
 			});
 		});
+	});
+
+	it('should successfully add list to database', (done) => {
+		chai.request(host)
+		.post('/api/lists')
+		.set('content-type', 'application/x-www-form-urlencoded')
+		.send({newListName: 'my name is list'})
+		.end((err, res) => {
+			// no errors
+			should.not.exist(err);
+			//status
+			res.status.should.equal(200)
+			// response type should be json
+			res.type.should.equal('application/json');
+			// should return three objects
+			knex('list').count('id').then(function(count){
+				count[0]['count(`id`)'].should.equal(3);
+			});
+			// insertion successful
+			knex.select('*').from('list').where('id', 3).then(function(values){
+				values[0].name.should.equal('my name is list');
+				done();
+			});
+		})
 	});
 });
