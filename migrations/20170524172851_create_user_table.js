@@ -5,13 +5,14 @@ exports.up = function(knex, Promise) {
 		t.string('username').notNullable()
 		t.string('password').notNullable()
 		t.timestamps(false, true)
-	}).then(function(){
-		    console.log("table " + 'user' + " created");
-		    return true;
-		}, function(){
-		    console.log("table " + 'user' + " could not be created");
-		    return false;
-		});  
+	});
+	// .then(function(){
+	//     console.log("table " + 'user' + " created");
+	//     return true;
+	// }, function(){
+	//     console.log("table " + 'user' + " could not be created");
+	//     return false;
+	// });  
 };
 
 exports.down = function(knex, Promise) {
