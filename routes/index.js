@@ -71,6 +71,7 @@ var knex = require('knex')(require('../knexfile'))
 {
 	// create new list and add to database
 	router.post('/api/lists', (req, res) => {
+		console.log("about to post list");
 		var listName = req.body.newListName;
 		knex('list')
 		.returning('id')
@@ -88,24 +89,6 @@ var knex = require('knex')(require('../knexfile'))
 		res.contentType('application/json');
 		knex.select('*').from('list').then(function(params){
 			res.status(200).send({'data': params });
-		});
-	});
-}
-
-/* list entries */
-{
-	// create new entry and add to database
-	router.post('api/entries', (req, res) => {
-		var listId = req.body.listId;
-		var spotId = req.body.listId;
-		knex('entry')
-		.returning('id')
-		.insert({
-			spot_id: spotId,
-			list_id: listId
-		})
-		.then(function(params){
-			res.status(200).send(req.body);
 		});
 	});
 }

@@ -8,8 +8,6 @@ exports.seed = function(knex, Promise) {
         knex('spot').insert({id: 1, name: 'rowValue1'}),
         knex('spot').insert({id: 2, name: 'rowValue2'}),
         knex('spot').insert({id: 3, name: 'rowValue3'}),
-
-
       ]);
     });
 };
