@@ -15,6 +15,7 @@ describe('routes : all', () => {
       .then(() => {
         knex.seed.run()
         .then(() => {
+          console.log("finished outer BeforeEach");
           done();
         });
       });
@@ -90,16 +91,29 @@ describe('routes : all', () => {
     describe('routes : entries', () => {
 
       beforeEach((done) => {
+
         knex('entry').del()
+        .then( () => {
+          knex('list').del()
+        })
+        .then( () => {
+          console.log("about to send post for list");
+          chai.request(host)
+          .post('/api/lists/')
+          .set('content-type', 'application/x-www-form-urlencoded')
+          .send({newListName: "testlist"})
+          .end();
+        })
         .then( () => { 
           chai.request(host)
-          .post('/api/lists/1/entries')
+          .post('/1/entries')
           .set('content-type', 'application/x-www-form-urlencoded')
           .send({spotId: 1})
+          .end();
           console.log('finished entry post database transaction');
-        })
+        })  
         .then(() => {
-          console.log('finished entry beforeEach');
+          console.log('finished inner beforeEach');
           done();
         });
       });
@@ -110,12 +124,12 @@ describe('routes : all', () => {
         .end((err, res) => {
           // console.log(err);
           should.not.exist(err);
-          // res.status.should.equal(200);
-          // res.type.should.equal('application/json');
-          // res.body.data[0].should.include.keys(
-          //   'id', 'spot_id', 'list_id', 'created_at', 'updated_at'
-          // );
-          // knex('entry').count 
+          res.status.should.equal(200);
+          res.type.should.equal('application/json');
+          res.body.data[0].should.include.keys(
+            'id', 'spot_id', 'list_id', 'created_at', 'updated_at'
+          );
+          knex('entry').count 
           done();
         })
       });

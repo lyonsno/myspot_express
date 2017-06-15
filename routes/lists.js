@@ -10,16 +10,16 @@ var knex = require('knex')(require('../knexfile'))
 {
 	// create new list and add to database
 	router.post('/', (req, res) => {
+		res.contentType('application/json');
 		console.log("about to post list");
 		var listName = req.body.newListName;
 		knex('list')
-		.returning('id')
+		.returning()
 		.insert({
 			name: listName
 		})
 		.then(function(params){
-			res.send(req.body);
-			res.sendStatus(200);
+			res.status(200).send(params);
 		});
 	});
 
@@ -45,7 +45,7 @@ var knex = require('knex')(require('../knexfile'))
 	});
 
 	// create new entry and add to database
-	router.post('/api/lists/:id/entries', (req, res) => {
+	router.post('/:id/entries', (req, res) => {
 		console.log("about to post entry");
 		var listId = id;
 		var spotId = req.body.spotId;
