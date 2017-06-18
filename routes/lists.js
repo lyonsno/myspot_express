@@ -39,7 +39,7 @@ var knex = require('knex')(require('../knexfile'))
 		res.contentType('application/json');
 		knex('entry').where('list_id', listId)
 		.then(function(params){
-			console.log(res.error);
+			console.log(res.err);
 			res.status(200).send(params);
 		});
 	});
