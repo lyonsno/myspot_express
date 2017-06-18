@@ -103,42 +103,58 @@ describe('routes : all', () => {
             .send({newListName: "testlist"})
             .end();
           })
-        .then( () => { 
-          console.log("setting up entry for entries test")
-          chai.request(host)
-          .post('/api/lists/1/entries')
-          .set('content-type', 'application/x-www-form-urlencoded')
-          .send({spotId: '1'})
-          .end();
-        })  
+        // .then( () => { 
+        //   console.log("setting up entry for entries test")
+        //   chai.request(host)
+        //   .post('/api/lists/1/entries')
+        //   .set('content-type', 'application/x-www-form-urlencoded')
+        //   .send({spotId: '1'})
+        //   .end();
+        // })  
         .then(() => {
           done();
         });
       });
 
       it('should add new entry to database', (done) => {
-        // chai.request(host)
-        // .post('api/lists/1')
-        // .set('content-type', 'application/x-www-form-urlencoded')
-        // .send({spotId: 1})
-        // // .end()
-        // .then( () => {
           chai.request(host)
-          .get('/api/lists/1/entries')
-          .end((err, res) => {
-            // console.log(err);
-            should.not.exist(err);
-            res.status.should.equal(200);
-            res.type.should.equal('application/json');
-            res.body.data[0].should.include.keys(
-              'id', 'spot_id', 'list_id', 'created_at', 'updated_at'
-            );
-            knex('entry').count 
-            done();
-          // })
-        })
+          .post('/api/lists/1/entries')
+          .set('content-type', 'application/x-www-form-urlencoded')
+          .send({spotId: '1'})
+          .end(() => {
+
+            chai.request(host)
+            .get('/api/lists/1/entries')
+            .end((err, res) => {
+              // console.log(err);
+              should.not.exist(err);
+              res.status.should.equal(200);
+              res.type.should.equal('application/json');
+              // res.body.data[0].should.include.keys(
+                // 'id', 'spot_id', 'list_id', 'created_at', 'updated_at'
+              // );
+              knex('entry').count('id')
+              .then(function(count) {
+                count[0]['count(`id`)'].should.equal(1);
+              })
+              .then(() => {
+                knex('entry').where('id', 1)
+                .then(function(params) {
+                  console.log('LOGGING PARAMS ==========\n' + params);
+                  params[0].id.should.equal(1);
+                  console.log(params[0]);
+                  done();
+                });
+              });
+            });
+          });
       });
-    });
+
+    //   it('should delete entry from database', (done) => {
+    //     chai.request(host)
+    //     .del
+    //   });
+    // });
 
 
     it('should respond with all lists', (done) => {

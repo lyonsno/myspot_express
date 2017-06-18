@@ -46,11 +46,12 @@ var knex = require('knex')(require('../knexfile'))
 
 	// create new entry and add to database
 	router.post('/:id/entries', (req, res) => {
-		console.log("about to post entry");
-		var listId = id;
+		console.log("about to post entry\n spotId: " + req.body.spotId);
+		var listId = req.params.id;
 		var spotId = req.body.spotId;
+		// res.sendStatus(200);
 		knex('entry')
-		.returning('id')
+		.returning()
 		.insert({
 			spot_id: spotId,
 			list_id: listId
