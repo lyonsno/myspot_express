@@ -103,25 +103,25 @@ describe('routes : all', () => {
             .send({newListName: "testlist"})
             .end();
           })
-        // .then( () => { 
-        //   console.log("setting up entry for entries test")
-        //   chai.request(host)
-        //   .post('/api/lists/1/entries')
-        //   .set('content-type', 'application/x-www-form-urlencoded')
-        //   .send({spotId: '1'})
-        //   .end();
-        // })  
+        .then( () => { 
+          console.log("setting up entry for entries test")
+          chai.request(host)
+          .post('/api/lists/1/entries')
+          .set('content-type', 'application/x-www-form-urlencoded')
+          .send({spotId: '1'})
+          .end();
+        })  
         .then(() => {
           done();
         });
       });
 
       it('should add new entry to database', (done) => {
-          chai.request(host)
-          .post('/api/lists/1/entries')
-          .set('content-type', 'application/x-www-form-urlencoded')
-          .send({spotId: '1'})
-          .end(() => {
+          // chai.request(host)
+          // .post('/api/lists/1/entries')
+          // .set('content-type', 'application/x-www-form-urlencoded')
+          // .send({spotId: '1'})
+          // .end(() => {
 
             chai.request(host)
             .get('/api/lists/1/entries')
