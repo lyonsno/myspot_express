@@ -49,7 +49,6 @@ var knex = require('knex')(require('../knexfile'))
 		console.log("about to post entry\n spotId: " + req.body.spotId);
 		var listId = req.params.id;
 		var spotId = req.body.spotId;
-		res.sendStatus(200);
 		knex('entry')
 		.returning()
 		.insert({
