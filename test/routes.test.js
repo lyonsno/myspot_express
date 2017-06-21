@@ -96,7 +96,6 @@ describe('routes : all', () => {
           knex('list').del()
         })
           .then( () => {  // add a list
-            console.log("setting up list for entries test");
             chai.request(host)
             .post('/api/lists')
             .set('content-type', 'application/x-www-form-urlencoded')
@@ -108,23 +107,58 @@ describe('routes : all', () => {
         });
       });
 
-      it('should add new entry to database', (done) => {
+      it('should add new list entry to database', (done) => {
           chai.request(host)
           .post('/api/lists/1/entries')
           .set('content-type', 'application/x-www-form-urlencoded')
-          .send({spotId: '2'})
+          .send({spotId: '1'})
           // confirm database contains new entry
           .end(() => {
             knex('entry').orderBy('created_at', 'asc')
             .then(function(params) {
-              params[0].spot_id.should.equal(2);
+              params[0].spot_id.should.equal(1);
               done();
             });
           });
         });
 
-      // it('should ')
+      it('should remove a list entry from the database', (done) => {
+        chai.request(host)
+        .post('/api/lists/1/entries')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({spotId: '2'})
+        .then(function(params) {
+          entryId = params.res.body[0];
+          chai.request(host)
+          .delete('/api/lists/1/entries/' + entryId)
+          .end((err, res) => {
+            err.should.be(null);
+            res.should.have.status(200);
+          });
+        })
+        .then(() => {
+          knex.select('*').from('entry').where('id', entryId)
+          .then((result) => {
+            // console.log("THIS IS THE RESULT: " + result[0]);
+            // for (index = 0; index < result.length; index ++)
+            // {
+              // console.log('RESULT[' + result[index] + ']');
+            // }
+            var output, property;
+            for (property in result[0]) {
+              output += property + ': ' + result[0][property] + '; ';
+            }
+            console.log(output);
+            done();
+          })
+          .catch(function(error) {
+            console.log(error);
+            done();
+          })
+        })
+        // .catch(done);
       });
+    });
 
     //   it('should delete entry from database', (done) => {
     //     chai.request(host)
@@ -163,7 +197,8 @@ describe('routes : all', () => {
         // response type should be json
         res.type.should.equal('application/json');
         // should return three objects
-        knex('list').count('id').then(function(count){
+        knex('list').count('id')
+        .then(function(count){
           count[0]['count(`id`)'].should.equal(3);
         });
         // insertion successful

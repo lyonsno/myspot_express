@@ -55,10 +55,30 @@ var knex = require('knex')(require('../knexfile'))
 			spot_id: spotId,
 			list_id: listId
 		})
+		.on('query-error', function(error, obj) {
+			app.log(error);
+		})
 		.then(function(params){
-			res.status(200).send(params);
+			res.send(params);
 		});
 	});
+
+	// remove an entry from the database
+	router.delete('/:listId/entries/:entryId', (req, res) => {
+		var listId = req.params.listId;
+		var entryId = req.params.entryId;
+		knex('entry').where('id', entryId).del()
+		.on('query-error', function(error, obj) {
+  			console.log("ERROR " + error);
+		})
+		.then(function(params){
+			res.sendStatus(200);
+		})
+		.catch( function(error) {
+			console.log("ERROR; " + error)
+			res.sendStatus(500);
+		});
+	})
 }
 
 module.exports = router;
