@@ -8,4 +8,5 @@ module.exports = {
 	seeds: {
 		directory: __dirname + '/db/seeds'
 	}
+	// ,debug: true
 }
