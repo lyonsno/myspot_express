@@ -24,6 +24,14 @@ var knex = require('knex')(require('../knexfile'))
 	});
 
 	// get json representation of all lists
+	router.get('/:id', (req, res) => {
+		res.contentType('application/json');
+		knex.select('*').from('list').where('id', req.params.id).then(function(params){
+			res.status(200).send({'data': params });
+		});
+	});
+
+		// get json representation of all lists
 	router.get('/', (req, res) => {
 		res.contentType('application/json');
 		knex.select('*').from('list').then(function(params){
@@ -46,6 +54,7 @@ var knex = require('knex')(require('../knexfile'))
 
 	// create new entry and add to database
 	router.post('/:id/entries', (req, res) => {
+		res.contentType('application/json');
 		console.log("about to post entry\n spotId: " + req.body.spotId);
 		var listId = req.params.id;
 		var spotId = req.body.spotId;
@@ -56,10 +65,14 @@ var knex = require('knex')(require('../knexfile'))
 			list_id: listId
 		})
 		.on('query-error', function(error, obj) {
-			app.log(error);
+			console.log("QUERY ERROR: " + error);
 		})
 		.then(function(params){
-			res.send(params);
+			console.info('params returned from knex insert = ' + JSON.stringify(params));
+			res.status(200).send({"entryId" : params});
+			// res.body = {'entryId' : params};
+			// res.sendStatus(200);
+			// res.send({'entryId': params});
 		});
 	});
 
@@ -67,12 +80,19 @@ var knex = require('knex')(require('../knexfile'))
 	router.delete('/:listId/entries/:entryId', (req, res) => {
 		var listId = req.params.listId;
 		var entryId = req.params.entryId;
+		console.log('handling entry delete');
+		res.body = {'entryId' : entryId};
+		console.log('res.body = ' + res.body);
+		console.log('req.params.entryId = ' + req.params.entryId);
 		knex('entry').where('id', entryId).del()
 		.on('query-error', function(error, obj) {
   			console.log("ERROR " + error);
 		})
-		.then(function(params){
+		.then((params) => {
+			// res.body = {'entryId' : entryId};
+			console.log('RES' + res.body.entryId);
 			res.sendStatus(200);
+			// res.sendStatus(200);
 		})
 		.catch( function(error) {
 			console.log("ERROR; " + error)

@@ -122,38 +122,34 @@ describe('routes : all', () => {
           });
         });
 
-      it('should remove a list entry from the database', (done) => {
-        chai.request(host)
+      it('should remove a list entry from the database', () => {
+        return chai.request(host)
         .post('/api/lists/1/entries')
         .set('content-type', 'application/x-www-form-urlencoded')
         .send({spotId: '2'})
-        .then(function(params) {
-          entryId = params.res.body[0];
+        .then(function(postResponse) {
+          console.info('postResponse = ' + JSON.stringify(postResponse.body ,null, 2));
+          entryId = postResponse.body.entryId;
           chai.request(host)
           .delete('/api/lists/1/entries/' + entryId)
-          .end((err, res) => {
-            err.should.be(null);
-            res.should.have.status(200);
-          });
-        })
-        .then(() => {
-          knex.select('*').from('entry').where('id', entryId)
-          .then((result) => {
-            // console.log("THIS IS THE RESULT: " + result[0]);
-            // for (index = 0; index < result.length; index ++)
-            // {
-              // console.log('RESULT[' + result[index] + ']');
-            // }
-            var output, property;
-            for (property in result[0]) {
-              output += property + ': ' + result[0][property] + '; ';
-            }
-            console.log(output);
-            done();
+          .then(function(deleteResponse) {
+            // console.log("ERR: " + err[0] );
+            console.info("RES: " + deleteResponse.body);
+            // err.should.be(null);
+            deleteResponse.should.have.status(200);
+            console.log("ENTRY ID: " + entryId);
+            knex.select('*').from('entry').where('id', entryId)
+            .then((result) => {
+              result.should.equal(2)
+            })
+            .catch(function(error) {
+              console.log("ERROR BY KNEX QUERY: " + error);
+              error.should.be(null);
+            })
           })
           .catch(function(error) {
-            console.log(error);
-            done();
+            console.log("ERROR THROWN BY DELETE REQ: " + error);
+            err.should.be(null);
           })
         })
         // .catch(done);
