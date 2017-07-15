@@ -2,6 +2,7 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const should = chai.should();
+const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 var knex = require('knex')(require('../knexfile'))
@@ -130,29 +131,27 @@ describe('routes : all', () => {
         .then(function(postResponse) {
           console.info('postResponse = ' + JSON.stringify(postResponse.body ,null, 2));
           entryId = postResponse.body.entryId;
-          chai.request(host)
+          return chai.request(host)
           .delete('/api/lists/1/entries/' + entryId)
-          .then(function(deleteResponse) {
-            // console.log("ERR: " + err[0] );
-            console.info("RES: " + deleteResponse.body);
-            // err.should.be(null);
-            deleteResponse.should.have.status(200);
-            console.log("ENTRY ID: " + entryId);
-            knex.select('*').from('entry').where('id', entryId)
-            .then((result) => {
-              result.should.equal(2)
-            })
-            .catch(function(error) {
-              console.log("ERROR BY KNEX QUERY: " + error);
-              error.should.be(null);
-            })
-          })
-          .catch(function(error) {
-            console.log("ERROR THROWN BY DELETE REQ: " + error);
-            err.should.be(null);
-          })
         })
-        // .catch(done);
+        .then(function(deleteResponse) {
+          deleteResponse.should.have.status(200);
+          return knex.select('*').from('entry').where('id', entryId)
+        })
+        .then(function(queryResult) {
+          console.log(queryResult);
+          return expect(queryResult).to.be.empty;
+        })
+        .catch(function(error) {
+          console.info.bind(console);
+          console.log("ERROR BY KNEX QUERY: " + error);
+          return expect(error).to.be(null);
+        })
+        .catch(function(error) {
+          console.info.bind(console);          
+          console.log("ERROR THROWN BY DELETE REQ: " + error);
+          return err.should.be(null);
+        });
       });
     });
 
