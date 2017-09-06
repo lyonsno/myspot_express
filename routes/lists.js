@@ -47,10 +47,43 @@ var knex = require('knex')(require('../knexfile'))
 		res.contentType('application/json');
 		knex('entry').where('list_id', listId)
 		.then(function(params){
-			console.log(res.err);
 			res.status(200).send(params);
+		})
+		.catch(function(error) {
+			res.status(404).send(error);
 		});
 	});
+
+	// get specific entry from list
+	router.get('/:listId/entries/:entryId', (req, res) => {
+		try
+		{
+		console.log('reached get single entry endpoint');
+		var listId = req.params.listId;
+		var entryId = req.params.entryId;
+		res.contentType('application/json');
+		knex.select().from('entry').where('id', entryId)
+		.then(function(results) {
+			if (results.length == 0)
+			{
+				// throw new Error('error selecting single entry Id');
+				console.log("if caught");
+				return res.status(404).send(results);
+				// return res.status(404).send(results);
+			}
+			return res.status(200).send(results);
+		})
+		.catch(function(error) {
+			console.log("catch caught");
+			return res.status(404).send(error);
+		});
+		}
+		catch (error)
+		{
+			console.log("try caught");
+			return res.status(404).send(error);
+		}
+	})
 
 	// create new entry and add to database
 	router.post('/:id/entries', (req, res) => {

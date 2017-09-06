@@ -32,7 +32,7 @@ describe('routes : all', () => {
   describe('routes : spots', () => {
   // var host = "http://" + process.env.IP + ':' + process.env.PORT;
 
-    var host = "http://127.0.0.1:3000";
+    var host = "http://127.0.0.1:4000";
     var path = "/api/spots";
 
     it('should respond with all spots', (done) => {
@@ -84,7 +84,7 @@ describe('routes : all', () => {
 
   describe('routes : lists', () => {  
 
-    var host = "http://127.0.0.1:3000";
+    var host = "http://127.0.0.1:4000";
     var path = "/api/lists";
     var listId = 1;
 
@@ -96,29 +96,29 @@ describe('routes : all', () => {
         .then( () => {
           knex('list').del()
         })
-          .then( () => {  // add a list
-            chai.request(host)
-            .post('/api/lists')
-            .set('content-type', 'application/x-www-form-urlencoded')
-            .send({newListName: "testlist"})
-            .end();
-          })
+        .then( () => {  // add a list
+          chai.request(host)
+          .post('/api/lists')
+          .set('content-type', 'application/x-www-form-urlencoded')
+          .send({newListName: "testlist"})
+          .end();
+        })
         .then(() => {
           done();
         });
       });
 
-      it('should add new list entry to database', (done) => {
+      it('should add new list entry to database', () => {
           chai.request(host)
           .post('/api/lists/1/entries')
           .set('content-type', 'application/x-www-form-urlencoded')
           .send({spotId: '1'})
           // confirm database contains new entry
-          .end(() => {
-            knex('entry').orderBy('created_at', 'asc')
+          .then(function(postResponse) {
+            knex.select('id').from('spot').where('id', '1')
             .then(function(params) {
-              params[0].spot_id.should.equal(1);
-              done();
+              console.log(params);
+              params.length.should.equal(1);
             });
           });
         });
@@ -129,7 +129,6 @@ describe('routes : all', () => {
         .set('content-type', 'application/x-www-form-urlencoded')
         .send({spotId: '2'})
         .then(function(postResponse) {
-          console.info('postResponse = ' + JSON.stringify(postResponse.body ,null, 2));
           entryId = postResponse.body.entryId;
           return chai.request(host)
           .delete('/api/lists/1/entries/' + entryId)
@@ -145,12 +144,23 @@ describe('routes : all', () => {
         .catch(function(error) {
           console.info.bind(console);
           console.log("ERROR BY KNEX QUERY: " + error);
-          return expect(error).to.be(null);
+          return expect(error).to.be.null;
         })
         .catch(function(error) {
           console.info.bind(console);          
           console.log("ERROR THROWN BY DELETE REQ: " + error);
-          return err.should.be(null);
+          return expect(error).to.be.null;
+        });
+      });
+
+      it('should 404 on requesting non existent entry', () => {
+        return chai.request(host)
+        .get('/api/lists/1/entries/99')
+        .then(function(result) {
+            return result.should.have.status(404)
+          },
+          function(error) {
+            return error.response.should.have.status(404);
         });
       });
     });
